@@ -24,10 +24,10 @@ class Station extends Model
      * @var array
      */
     protected $fillable = [
-    	'name',
-    	'mass',
-    	'docking_fee',
-    	'max_ships',
+      	'name',
+      	'mass',
+      	'docking_fee',
+      	'max_ships',
         'commander_id',
         'planet_id',
         'inventory_id'
