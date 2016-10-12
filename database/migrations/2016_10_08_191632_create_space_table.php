@@ -15,6 +15,7 @@ class CreateSpaceTable extends Migration
     {
         Schema::create('space', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('solar_system_id');
             $table->integer('x');
             $table->integer('y');
             $table->string('object_type');
