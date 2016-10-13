@@ -18,8 +18,8 @@ class CreateShipsTable extends Migration
             $table->integer('commander_id');
             $table->string('name');
             $table->string('type');
-            $table->integer('damage');
-            $table->integer('fuel');
+            $table->integer('force');
+            $table->float('mass');
             $table->timestamps();
         });
     }
