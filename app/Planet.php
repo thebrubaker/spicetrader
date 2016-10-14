@@ -6,7 +6,7 @@ use App\Station;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\hasMany;
 
-class Planet extends Model
+class Planet extends Model implements PositionInSpace
 {
     	/**
     	 * The name of the table
