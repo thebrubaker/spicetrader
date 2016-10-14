@@ -19,7 +19,7 @@ class TravelingTest extends TestCase
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
 
-        $ship->navigation->travelToLocation($planet->location);
+        $ship->navigation()->travelToLocation($planet->location);
 
         $this->assertTrue($ship->destination instanceof PositionInSpace);
     }
@@ -34,7 +34,7 @@ class TravelingTest extends TestCase
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
 
-        $ship->navigation->travelToObject($planet);
+        $ship->navigation()->travelToObject($planet);
 
         $this->assertTrue($ship->destination instanceof PositionInSpace);
     }
@@ -49,7 +49,7 @@ class TravelingTest extends TestCase
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
 
-        $ship->navigation->travelToObject($planet);
+        $ship->navigation()->travelToObject($planet);
 
         $this->assertTrue($planet->arriving_ships instanceof Collection);
         $this->assertEquals(1, $planet->arriving_ships->count());

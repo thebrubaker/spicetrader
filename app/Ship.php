@@ -26,6 +26,12 @@ class Ship extends Model
     ];
 
     /**
+     * The ship's navigation system
+     * @var NavigationSystem
+     */
+    protected $navigation;
+
+    /**
      * Constructor for a Ship
      * @param array $attributes
      */
@@ -34,6 +40,15 @@ class Ship extends Model
         parent::__construct($attributes);
 
         $this->navigation = app()->make(NavigationSystem::class);
+    }
+
+    /**
+     * Return the ship's navigation system
+     * @return NavigationSystem
+     */
+    public function navigation()
+    {
+        return $this->navigation;
     }
 
     /**
