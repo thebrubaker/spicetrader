@@ -13,7 +13,7 @@ class Space extends Model
 	 * Fillable attributes
 	 * @var array
 	 */
-    private $fillable = [
+    protected $fillable = [
         'x',
         'y',
         'object_type',

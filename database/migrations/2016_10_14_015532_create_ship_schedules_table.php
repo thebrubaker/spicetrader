@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateShipsTable extends Migration
+class CreateShipSchedulesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateShipsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ships', function (Blueprint $table) {
+        Schema::create('ship_schedules', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('commander_id');
-            $table->string('name');
-            $table->string('type');
-            $table->integer('force');
-            $table->integer('fuel');
-            $table->float('mass');
+            $table->integer('ship_id');
+            $table->string('destination_type');
+            $table->integer('destination_id');
+            $table->date('depart_time');
+            $table->date('arrival_time');
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreateShipsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('ships');
+        Schema::drop('ship_schedules');
     }
 }

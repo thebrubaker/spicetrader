@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Ship extends Model
 {
@@ -10,25 +11,29 @@ class Ship extends Model
 	 * Table for saving models
 	 * @var string
 	 */
-	private $table = 'ships';
+	protected $table = 'ships';
 
 	/**
 	 * Fillable attributes
 	 * @var array
 	 */
-    private $fillable = [
+    protected $fillable = [
     	'name',
+        'type',
+        'force',
     	'fuel',
-    	'damage'
+    	'mass'
     ];
 
     /**
-     * Constructor
-     * @param ShipSystems $systems
+     * Constructor for a Ship
+     * @param array $attributes
      */
-    function __construct(ShipSystems $systems)
+    function __construct(array $attributes)
     {
-    	$this->systems = $systems::boot($this);
+        parent::__construct($attributes);
+
+        $this->navigation = app()->make(NavigationSystem::class);
     }
 
     /**
@@ -38,5 +43,23 @@ class Ship extends Model
     public function location()
     {
     	return $this->morphTo(Space::class, 'object');
+    }
+
+    /**
+     * A ship has one schedule
+     * @return HasOne
+     */
+    public function schedule()
+    {
+        return $this->hasOne(Schedule::class);
+    }
+
+    /**
+     * A ship has one schedule
+     * @return HasOne
+     */
+    public function destination()
+    {
+        return $this->schedule->destination;
     }
 }

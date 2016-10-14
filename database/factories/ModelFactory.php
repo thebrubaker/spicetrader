@@ -1,6 +1,9 @@
 <?php
 
 use App\Commander;
+use App\Planet;
+use App\Ship;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,15 +25,35 @@ $factory->define(Commander::class, function (Faker\Generator $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
+        'credits' => $faker->numberBetween(500,10000)
     ];
 });
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(Planet::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'password' => $password ?: $password = bcrypt('secret'),
-        'remember_token' => str_random(10),
+        'name' => $faker->bothify($faker->colorName . '##??'),
+        'category' => $faker->randomElement(['Terrestrial', 'Ice Giant', 'Gas Giant'])
+    ];
+});
+
+$factory->define(Ship::class, function (Faker\Generator $faker) {
+    return [
+        'commander_id' => factory(Commander::class)->create()->id,
+        'name' => $faker->lastName,
+        'type' => $faker->bothify($faker->colorName . '-###'),
+        'force' => $faker->numberBetween(5000,20000),
+        'fuel' => $faker->numberBetween(100,500),
+        'mass' => $faker->numberBetween(100,500)
+    ];
+});
+
+$factory->define(Schedule::class, function (Faker\Generator $faker) {
+    return [
+        'ship_id' => factory(Ship::class)->create()->id,
+        'destination_type' => Planet::class,
+        'destination_id' => factory(Planet::class)->create()->id,
+        'depart_time' => Carbon::now(),
+        'arrival_time' => Carbon::now()->addHours(2)
     ];
 });

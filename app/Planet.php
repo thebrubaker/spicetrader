@@ -31,4 +31,13 @@ class Planet extends Model implements PositionInSpace
         {
         	return $this->hasMany(Station::class);
         }
+
+        /**
+         * The planet has one location in space
+         * @return HasOne
+         */
+        public function location()
+        {
+            return $this->hasOne(Space::class);
+        }
 }
