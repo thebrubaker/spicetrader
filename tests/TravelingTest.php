@@ -23,7 +23,7 @@ class TravelingTest extends TestCase
         $planet = factory(Planet::class)->create();
         $planet->location()->save(factory(Space::class)->make());
 
-        $schedule = $ship->navigation()->travelToLocation($planet->location);
+        $schedule = $ship->navigation()->travelTo($planet->location);
 
         $this->assertTrue($schedule instanceof Schedule);
     }
@@ -39,7 +39,7 @@ class TravelingTest extends TestCase
         $planet = factory(Planet::class)->create();
         $planet->location()->save(factory(Space::class)->make());
 
-        $schedule = $ship->navigation()->travelToKnownDestination($planet);
+        $schedule = $ship->navigation()->travelTo($planet);
 
         $this->assertTrue($schedule instanceof Schedule);
     }
@@ -55,7 +55,7 @@ class TravelingTest extends TestCase
         $planet = factory(Planet::class)->create();
         $planet->location()->save(factory(Space::class)->make());
 
-        $schedule = $ship->navigation()->travelToKnownDestination($planet);
+        $schedule = $ship->navigation()->travelTo($planet);
 
         $planet = $planet->fresh();
 
