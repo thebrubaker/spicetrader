@@ -1,9 +1,10 @@
 <?php
 
+use App\Chart;
 use App\Commander;
+use App\Location;
 use App\Planet;
 use App\Ship;
-use App\Space;
 use Carbon\Carbon;
 
 /*
@@ -59,10 +60,19 @@ $factory->define(Schedule::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(Space::class, function (Faker\Generator $faker) {
+$factory->define(Location::class, function (Faker\Generator $faker) {
     return [
         'solar_system_id' => 1,
+        'object_type' => Planet::class,
+        'object_id' => factory(Planet::class)->create()->id,
         'x' => $faker->numberBetween(-100,100),
         'y' => $faker->numberBetween(-100,100)
+    ];
+});
+
+$factory->define(Chart::class, function (Faker\Generator $faker) {
+    return [
+        'commander_id' => factory(Commander::class)->create()->id,
+        'location_id' => factory(Location::class)->create()->id
     ];
 });

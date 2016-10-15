@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\Location;
+use App\NavigationSystem;
+use App\Schedule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -57,7 +60,7 @@ class Ship extends Model
      */
     public function location()
     {
-    	return $this->morphTo(Space::class, 'object');
+    	return $this->morphTo(Location::class, 'object');
     }
 
     /**
@@ -67,5 +70,14 @@ class Ship extends Model
     public function schedule()
     {
         return $this->hasOne(Schedule::class);
+    }
+
+    /**
+     * A ship belongs to a commander
+     * @return BelongsTo
+     */
+    public function commander()
+    {
+        return $this->belongsTo(Commander::class);
     }
 }

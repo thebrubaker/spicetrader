@@ -2,12 +2,15 @@
 
 namespace App;
 
+use App\Chart;
+use App\Commander;
 use App\Ship;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\belongsTo;
-use Illuminate\Database\Eloquent\morphMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Space extends Model
+class Location extends Model
 {
     /**
      * The database table name
@@ -26,6 +29,15 @@ class Space extends Model
         'object_id',
         'solar_system_id'
     ];
+
+    /**
+     * A location morphs to an object in space
+     * @return MorphTo
+     */
+    public function object()
+    {
+        return $this->morphTo();
+    }
 
     /**
      * The ships in space
@@ -52,5 +64,14 @@ class Space extends Model
     public function planets()
     {
     	return $this->morphMany(Planet::class, 'object');
+    }
+
+    /**
+     * A location is known by many commanders
+     * @return BelongsToMany
+     */
+    public function known_by()
+    {
+        return $this->belongsToMany(Commander::class, 'space_charts')->withTimestamps();
     }
 }

@@ -1,9 +1,11 @@
 <?php
 
+use App\Chart;
+use App\Commander;
+use App\Location;
 use App\Planet;
 use App\Schedule;
 use App\Ship;
-use App\Space;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -17,11 +19,12 @@ class TravelingTest extends TestCase
      *
      * @test
      */
-    public function a_ship_can_travel_to_a_location()
+    public function a_ship_can_travel_to_a_known_location()
     {
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
-        $planet->location()->save(factory(Space::class)->make());
+        $planet->location()->save(factory(Location::class)->make());
+        $ship->commander->known_locations()->save($planet->location);
 
         $schedule = $ship->navigation()->travelTo($planet->location);
 
@@ -37,7 +40,7 @@ class TravelingTest extends TestCase
     {
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
-        $planet->location()->save(factory(Space::class)->make());
+        $planet->location()->save(factory(Location::class)->make());
 
         $schedule = $ship->navigation()->travelTo($planet);
 
@@ -53,7 +56,7 @@ class TravelingTest extends TestCase
     {
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
-        $planet->location()->save(factory(Space::class)->make());
+        $planet->location()->save(factory(Location::class)->make());
 
         $schedule = $ship->navigation()->travelTo($planet);
 

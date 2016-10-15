@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Location;
 use App\Schedule;
 use App\Station;
 use Illuminate\Database\Eloquent\Model;
@@ -39,7 +40,7 @@ class Planet extends Model implements PositionInSpace
          */
         public function location()
         {
-            return $this->morphOne(Space::class, 'object');
+            return $this->morphOne(Location::class, 'object');
         }
 
         /**

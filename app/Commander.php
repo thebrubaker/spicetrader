@@ -2,7 +2,10 @@
 
 namespace App;
 
+use App\Chart;
+use App\Location;
 use App\Ship;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -39,6 +42,24 @@ class Commander extends Authenticatable
     public function ships()
     {
         return $this->hasMany(Ship::class);
+    }
+
+    /**
+     * A commander has many charts
+     * @return HasMany
+     */
+    public function charts()
+    {
+        return $this->hasMany(Chart::class);
+    }
+
+    /**
+     * A commander knows many locations through charts
+     * @return HasManyThrough
+     */
+    public function known_locations()
+    {
+        return $this->belongsToMany(Location::class, 'space_charts')->withTimestamps();
     }
 
 }

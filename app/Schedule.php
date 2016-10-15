@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Location;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,11 +55,11 @@ class Schedule extends Model
     }
 
     /**
-     * Create a new Schedule to a location in Space
-     * @param  Space  $location
+     * Create a new Schedule to a location in Location
+     * @param  Location  $location
      * @return Schedule
      */
-    public function plotCourse(Space $location, Carbon $depart, Carbon $arrival)
+    public function plotCourse(Location $location, Carbon $depart, Carbon $arrival)
     {
         return $this->newInstance([
             'x' => $location->x,
