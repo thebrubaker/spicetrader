@@ -3,6 +3,7 @@
 use App\Commander;
 use App\Planet;
 use App\Ship;
+use App\Space;
 use Carbon\Carbon;
 
 /*
@@ -55,5 +56,13 @@ $factory->define(Schedule::class, function (Faker\Generator $faker) {
         'destination_id' => factory(Planet::class)->create()->id,
         'depart_time' => Carbon::now(),
         'arrival_time' => Carbon::now()->addHours(2)
+    ];
+});
+
+$factory->define(Space::class, function (Faker\Generator $faker) {
+    return [
+        'solar_system_id' => 1,
+        'x' => $faker->numberBetween(-100,100),
+        'y' => $faker->numberBetween(-100,100)
     ];
 });

@@ -2,18 +2,36 @@
 
 namespace App;
 
+use App\Schedule;
 use App\Space;
-use App\ScheduleFactory as Scheduler;
+use Carbon\Carbon;
 
 class NavigationSystem {
+
+	protected $ship;
+
+	protected $schedule;
 
 	/**
 	 * Constructor for the Navigation System
 	 * @param Scheduler $scheduling
 	 */
-	function __construct(Scheduler $plot)
+	function __construct(Schedule $schedule)
 	{
-		$this->plot = $plot;
+		$this->schedule = $schedule;
+	}
+
+	/**
+	 * Boot the naviation system for a Ship
+	 * @param  Ship  $ship
+	 * @return NavigationSystem
+	 */
+	public static function boot(Ship $ship)
+	{
+		$system = app()->make(self::class);
+		$system->ship = $ship;
+
+		return $system;
 	}
 
 	/**
@@ -22,13 +40,22 @@ class NavigationSystem {
 	 * @return Schedule
 	 */
 	public function travelToLocation(Space $location) {
-		$known_Location = $this->reviewCharts($location);
+		$known_destination = $this->reviewCharts($location);
 		
-		if($known_Location) {
-			$this->registerDestination($known_Location)
+		if($known_destination) {
+			$this->plotCourseToDestination($known_destination);
 		}
 
-		return $this->plot->course($location);
+		return $this->plotCourseToLocation($location);
+	}
+
+	/**
+	 * Plot a course to a destination
+	 * @param  Space  $location
+	 * @return Schedule
+	 */
+	public function travelToKnownDestination(PositionInSpace $destination) {
+		return $this->plotCourseToDestination($destination);
 	}
 
 	/**
@@ -49,6 +76,52 @@ class NavigationSystem {
 	public function registerDestination(PositionInSpace $destination)
 	{
 		return null;
+	}
+
+	/**
+	 * Create a new schedule for the ship to a location
+	 * @param  Space  $location
+	 * @return Schedule
+	 */
+	public function plotCourseToLocation(Space $location, $depart = null)
+	{
+		$depart = $depart ? Carbon::parse($depart) : Carbon::now();
+		$arrival = $this->estimateArrival($location, $depart);
+
+		$schedule = $this->schedule->plotCourse($location, $depart, $arrival);
+		$schedule->ship_id = $this->ship->id;
+		$schedule->save();
+
+		return $schedule;
+	}
+
+	/**
+	 * Create a new schedule for the ship to a location
+	 * @param  Space  $location
+	 * @return Schedule
+	 */
+	public function plotCourseToDestination(PositionInSpace $destination, $depart = null)
+	{
+		$depart = $depart ? Carbon::parse($depart) : Carbon::now();
+		$arrival = $this->estimateArrival($destination->location, $depart);
+
+		$schedule = $this->schedule->plotCourse($destination->location, $depart, $arrival);
+		$schedule->ship_id = $this->ship->id;
+		$schedule->destination()->associate($destination);
+		$schedule->save();
+
+		return $schedule;
+	}
+
+	/**
+	 * Estimate the arrival time to a location
+	 * @param  Space  $location
+	 * @param  Carbon $depart
+	 * @return Carbon
+	 */
+	public function estimateArrival(Space $location, Carbon $depart)
+	{
+		return $depart->addHours(3); // TODO: replace with a real check
 	}
 
 }

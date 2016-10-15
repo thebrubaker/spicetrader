@@ -16,8 +16,10 @@ class CreateShipSchedulesTable extends Migration
         Schema::create('ship_schedules', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('ship_id');
-            $table->string('destination_type');
-            $table->integer('destination_id');
+            $table->string('destination_type')->nullable();
+            $table->integer('destination_id')->nullable();
+            $table->integer('x');
+            $table->integer('y');
             $table->date('depart_time');
             $table->date('arrival_time');
             $table->timestamps();

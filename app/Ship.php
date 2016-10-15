@@ -35,11 +35,11 @@ class Ship extends Model
      * Constructor for a Ship
      * @param array $attributes
      */
-    function __construct(array $attributes)
+    function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
-        $this->navigation = app()->make(NavigationSystem::class);
+        $this->navigation = NavigationSystem::boot($this);
     }
 
     /**
@@ -67,14 +67,5 @@ class Ship extends Model
     public function schedule()
     {
         return $this->hasOne(Schedule::class);
-    }
-
-    /**
-     * A ship has one schedule
-     * @return HasOne
-     */
-    public function destination()
-    {
-        return $this->schedule->destination;
     }
 }

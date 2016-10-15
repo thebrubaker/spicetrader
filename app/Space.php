@@ -2,13 +2,19 @@
 
 namespace App;
 
-use App\Ships\Ship;
+use App\Ship;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\belongsTo;
 use Illuminate\Database\Eloquent\morphMany;
 
 class Space extends Model
 {
+    /**
+     * The database table name
+     * @var string
+     */
+    protected $table = 'space';
+
 	/**
 	 * Fillable attributes
 	 * @var array

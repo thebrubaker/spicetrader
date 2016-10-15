@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Schedule;
 use App\Station;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\hasMany;
@@ -38,6 +39,15 @@ class Planet extends Model implements PositionInSpace
          */
         public function location()
         {
-            return $this->hasOne(Space::class);
+            return $this->morphOne(Space::class, 'object');
+        }
+
+        /**
+         * The planet has one location in space
+         * @return HasOne
+         */
+        public function schedules()
+        {
+            return $this->morphMany(Schedule::class, 'destination');
         }
 }

@@ -1,8 +1,11 @@
 <?php
 
 use App\Planet;
+use App\Schedule;
 use App\Ship;
+use App\Space;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -18,10 +21,11 @@ class TravelingTest extends TestCase
     {
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
+        $planet->location()->save(factory(Space::class)->make());
 
-        $ship->navigation()->travelToLocation($planet->location);
+        $schedule = $ship->navigation()->travelToLocation($planet->location);
 
-        $this->assertTrue($ship->destination instanceof PositionInSpace);
+        $this->assertTrue($schedule instanceof Schedule);
     }
 
     /**
@@ -33,10 +37,11 @@ class TravelingTest extends TestCase
     {
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
+        $planet->location()->save(factory(Space::class)->make());
 
-        $ship->navigation()->travelToObject($planet);
+        $schedule = $ship->navigation()->travelToKnownDestination($planet);
 
-        $this->assertTrue($ship->destination instanceof PositionInSpace);
+        $this->assertTrue($schedule instanceof Schedule);
     }
 
     /**
@@ -48,11 +53,14 @@ class TravelingTest extends TestCase
     {
         $ship = factory(Ship::class)->create();
         $planet = factory(Planet::class)->create();
+        $planet->location()->save(factory(Space::class)->make());
 
-        $ship->navigation()->travelToObject($planet);
+        $schedule = $ship->navigation()->travelToKnownDestination($planet);
 
-        $this->assertTrue($planet->arriving_ships instanceof Collection);
-        $this->assertEquals(1, $planet->arriving_ships->count());
-        $this->assertTrue($planet->arriving_ships->first() instanceof Ship);
+        $planet = $planet->fresh();
+
+        $this->assertTrue($planet->schedules instanceof Collection);
+        $this->assertEquals(1, $planet->schedules->count());
+        $this->assertTrue($planet->schedules->first() instanceof Schedule);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -9,14 +10,19 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Schedule extends Model
 {
     /**
+     * The name of the database table
+     * @var string
+     */
+    protected $table = 'ship_schedules';
+
+    /**
      * Fillable attributes
      * @var array
      */
     protected $fillable = [
-    	'ship_id'
-    	'destination_type'
-    	'destination_id'
-    	'depart_time'
+        'x',
+        'y',
+    	'depart_time',
     	'arrival_time'
     ];
 
@@ -39,11 +45,26 @@ class Schedule extends Model
     }
 
     /**
-     * The destination morpgs to an object in space
+     * The destination morphs to an object in space
      * @return MorphTo
      */
     public function destination()
     {
     	return $this->morphTo();
+    }
+
+    /**
+     * Create a new Schedule to a location in Space
+     * @param  Space  $location
+     * @return Schedule
+     */
+    public function plotCourse(Space $location, Carbon $depart, Carbon $arrival)
+    {
+        return $this->newInstance([
+            'x' => $location->x,
+            'y' => $location->y,
+            'depart_time' => $depart,
+            'arrival_time' => $arrival
+        ]);
     }
 }
