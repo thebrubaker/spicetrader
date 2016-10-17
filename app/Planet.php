@@ -8,7 +8,7 @@ use App\Station;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\hasMany;
 
-class Planet extends Model implements PositionInSpace
+class Planet extends Model implements ObjectInSpace
 {
     	/**
     	 * The name of the table
@@ -36,7 +36,7 @@ class Planet extends Model implements PositionInSpace
 
         /**
          * The planet has one location in space
-         * @return HasOne
+         * @return MorphOne
          */
         public function location()
         {

@@ -55,11 +55,10 @@ class Commander extends Authenticatable
 
     /**
      * A commander knows many locations through charts
-     * @return HasManyThrough
+     * @return BelongsToMany
      */
     public function known_locations()
     {
         return $this->belongsToMany(Location::class, 'space_charts')->withTimestamps();
     }
-
 }

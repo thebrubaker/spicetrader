@@ -4,11 +4,12 @@ namespace App;
 
 use App\Location;
 use App\NavigationSystem;
+use App\ObjectInSpace;
 use App\Schedule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Ship extends Model
+class Ship extends Model implements ObjectInSpace
 {
 	/**
 	 * Table for saving models
@@ -38,7 +39,7 @@ class Ship extends Model
      * Constructor for a Ship
      * @param array $attributes
      */
-    function __construct(array $attributes = [])
+    function __construct($attributes = [])
     {
         parent::__construct($attributes);
 
@@ -56,11 +57,11 @@ class Ship extends Model
 
     /**
      * A ship has a location in space as an object
-     * @return MorphTo
+     * @return MorphOne
      */
     public function location()
     {
-    	return $this->morphTo(Location::class, 'object');
+    	return $this->morphOne(Location::class, 'object');
     }
 
     /**

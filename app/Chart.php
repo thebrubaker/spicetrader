@@ -30,7 +30,7 @@ class Chart extends Model
      */
     public function commander()
     {
-    	return $this->belongsTo(Commander::classs);
+    	return $this->belongsTo(Commander::class);
     }
 
     /**
@@ -39,6 +39,6 @@ class Chart extends Model
      */
     public function location()
     {
-    	return $this->belongsTo(Location::classs);
+    	return $this->belongsTo(Location::class);
     }
 }
