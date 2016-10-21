@@ -3,7 +3,7 @@
 namespace App;
 
 use App\Location;
-use App\NavigationSystem;
+use App\Navigation\NavigationSystem;
 use App\ObjectInSpace;
 use App\Schedule;
 use Illuminate\Database\Eloquent\Model;

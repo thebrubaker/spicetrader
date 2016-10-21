@@ -28,44 +28,8 @@ class TravelingTest extends TestCase
         $schedule = $ship->navigation()->travelTo($planet);
 
         $this->assertTrue($schedule instanceof Schedule);
-        $this->assertEquals($schedule->destination, $planet);
+        $this->assertEquals($schedule->destination->id, $planet->id);
     }
-
-    // public function travelTo(array $location)
-    // {
-    //     // what is traveling?
-    //     $ship = new Ship();
-    //     // where are we
-    //     $ship->location(); // outputs new Location();
-
-    //     // how do we represent location?
-    //     $location->object_id; // 1
-    //     $location->object_type; // App\Ship
-    //     $location->x; 
-    //     $location->y; 
-    //     $location->updated_at;
-    //     $location->solar_system_id;
-
-    //     // what are the attributes of the ship
-    //     $ship->mass
-    //     $ship->force
-    //     $ship->etc
-    //     // where is the destination
-    //     $planet = new Planet();
-    //     $planet->location;
-    //     // when are we leaving?
-    //     $now = Carbon::now();
-    //     // how long does it take to get there?
-    //     $ship->computer->calculateTimeToDestination($destination);
-    //     $schedule = $ship->navigation->travelTo($location, $depart, $location);
-
-    //     $ship->scanner->detectLife($radius);
-    //     $ship->pilot->evasiveManeuvers();
-    //     // how do we save that we are now traveling there?
-    //     $schedule = Schedule($ship, $location, $departed_at, $estimated_arival, $planet);
-    //     // once it has been saved (this ship is now traveling), what is returned to the user so they know it worked?
-    //     return $schedule;
-    // }
 
     /**
      * @test
@@ -73,6 +37,7 @@ class TravelingTest extends TestCase
     public function a_ship_can_travel_to_a_space_chart()
     {
         $ship = factory(Ship::class)->create();
+        $ship->location()->save(factory(Location::class)->make());
         $chart = factory(Chart::class)->create();
 
         $schedule = $ship->navigation()->travelTo($chart);
@@ -87,6 +52,7 @@ class TravelingTest extends TestCase
     public function a_ship_can_travel_to_a_location()
     {
         $ship = factory(Ship::class)->create();
+        $ship->location()->save(factory(Location::class)->make());
         $location = factory(Chart::class)->create()->location;
 
         $schedule = $ship->navigation()->travelTo($location);
@@ -101,6 +67,7 @@ class TravelingTest extends TestCase
     public function a_ship_can_travel_to_a_coordinate()
     {
         $ship = factory(Ship::class)->create();
+        $ship->location()->save(factory(Location::class)->make());
         $chart = factory(Chart::class)->create();
 
         $schedule = $ship->navigation()->travelTo([ 'x' => 25, 'y' => -30 ]);
@@ -115,6 +82,7 @@ class TravelingTest extends TestCase
     public function a_planet_has_a_list_of_arriving_ships()
     {
         $ship = factory(Ship::class)->create();
+        $ship->location()->save(factory(Location::class)->make());
         $planet = factory(Planet::class)->create();
         $planet->location()->save(factory(Location::class)->make());
 

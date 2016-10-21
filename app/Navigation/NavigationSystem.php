@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Navigation;
 
 use App\Chart;
 use App\Commander;
@@ -86,7 +86,7 @@ class NavigationSystem {
 			return $this->travelToCoordinates($destination);
 		}
 
-		throw new NavigationSystemException('Invalid destination. Location must be an instance of an ObjectInSpace, Chart, Location or array with (x, y) keys');
+		throw new InvalidDestinationException('Invalid destination. Location must be an instance of an ObjectInSpace, Chart, Location or array with (x, y) keys');
 	}
 
 	/**
@@ -114,6 +114,7 @@ class NavigationSystem {
 	 */
 	protected function travelToLocation(Location $location) {
 		$schedule = $this->plotCourse($location);
+		$schedule->ship_id = $this->ship->id;
 		$schedule->destination()->associate($location->object);
 		$schedule->save();
 
@@ -125,8 +126,9 @@ class NavigationSystem {
 	 * @param  Location  $location
 	 * @return Schedule
 	 */
-	protected function travelToCoordinates(int $x, int $y) {
-		$schedule = $this->plotCoordinates($x, $y);
+	protected function travelToCoordinates(array $coordinates) {
+		$schedule = $this->plotCoordinates($coordinates);
+		$schedule->ship_id = $this->ship->id;
 		$schedule->save();
 
 		return $schedule;
@@ -140,12 +142,9 @@ class NavigationSystem {
 	protected function plotCourse(Location $location, $depart = null)
 	{
 		$depart_time = $depart ? Carbon::parse($depart) : Carbon::now();
-		$arrival_time = $this->estimateArrival($location, $depart);
-
-		$schedule = $this->schedule->plotCourse($location, $depart_time, $arrival_time);
-		$schedule->ship_id = $this->ship->id;
-
-		return $schedule;
+		$arrival_time = $this->estimateArrival($location, $depart_time);
+		
+		return $this->schedule->plotCourse($location, $depart_time, $arrival_time);
 	}
 
 	/**
@@ -155,13 +154,13 @@ class NavigationSystem {
 	 */
 	protected function plotCoordinates(array $coordinates, $depart = null)
 	{
-		$depart = $depart ? Carbon::parse($depart) : Carbon::now();
-		$arrival = $this->estimateArrival($coordinates, $depart);
-
-		$schedule = $this->schedule->plotCourse($coordinates, $depart, $arrival);
-		$schedule->ship_id = $this->ship->id;
-
-		return $schedule;
+		// Turn the depart time into a Carbon object, default is now()
+		$depart_time = $depart ? Carbon::parse($depart) : Carbon::now();
+		// Estimate the arrival time based on where we are going, and when we are leaving
+		$arrival_time = $this->estimateArrival($coordinates, $depart_time);
+		
+		// Now draft a new schedule using all this info
+		return $this->schedule->plotCoordinates($coordinates, $depart_time, $arrival_time);
 	}
 
 	/**
@@ -172,6 +171,7 @@ class NavigationSystem {
 	 */
 	protected function estimateArrival($location, Carbon $depart)
 	{
+		// If this is a location, convert it to coordinates
 		if($location instanceof Location) {
 			$location = [
 				'x' => $location->x,
@@ -179,11 +179,27 @@ class NavigationSystem {
 			];
 		}
 
-		if($this->isCoordinates($location)) {
-			return $depart->addHours(3);
+		// if location isn't coordinates at this point, throw an exception
+		if(!$this->isCoordinates($location)) {
+			throw new NavigationSystemException('First argument must be an instance of Location or an array with (x, y) keys.');
 		}
+		// Calculate the number of minutes for the ship to reach the location
+		$minutes = $this->timeToTravel($this->ship, $location);
 		
-		throw new NavigationSystemException('First argument must be an instance of Location or an array with (x, y) keys.');
+		// Add that to the depart time to get the arrival time
+		return $depart->addMinutes($minutes);
+	}
+
+	/**
+	 * Estimate the time to travel from the ship's location to coordinates
+	 * @param  Ship  $ship
+	 * @param  array  $coordinates
+	 * @return int
+	 */
+	public function timeToTravel(Ship $ship, array $destination_coordinates)
+	{
+		$starting_coordinates = $ship->location->toCoordinates();
+		// Art to fill in this part!!!
 	}
 
 	/**
@@ -195,29 +211,4 @@ class NavigationSystem {
 	{
 		return is_array($coordinates) && array_key_exists('x', $coordinates) && array_key_exists('y', $coordinates);
 	}
-
-	/**
-	 * Review charts to see if a location is a known location
-	 * @param  Location  $location
-	 * @return Chart|null
-	 */
-	protected function checkForChartedLocation(Location $location)
-	{
-		return $this->commander->charts->filter(function($chart) use ($location) {
-			return $location->id === $chart->location_id;
-		})->first();
-	}
-
-	/**
-	 * Review charts to see if a location is a known location
-	 * @param  Location  $location
-	 * @return Location|null
-	 */
-	protected function checkForLocation(Location $location)
-	{
-		return $this->commander->known_locations->filter(function($known_location) use ($location) {
-			return $known_location->id === $location->id;
-		})->first();
-	}
-
 }

@@ -74,4 +74,16 @@ class Location extends Model
     {
         return $this->belongsToMany(Commander::class, 'space_charts')->withTimestamps();
     }
+
+    /**
+     * Map a location to an array of coordinates
+     * @return array
+     */
+    public function toCoordinates()
+    {
+        return [
+            'x' => $this->x,
+            'y' => $this->y
+        ];
+    }
 }

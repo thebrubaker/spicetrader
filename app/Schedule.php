@@ -68,4 +68,21 @@ class Schedule extends Model
             'arrival_time' => $arrival
         ]);
     }
+
+    /**
+     * Plot a schedule to (x, y) coordinates
+     * @param  array  $coordinates
+     * @param  Carbon  $depart_time
+     * @param  Carbon  $arrival_time
+     * @return Schedule
+     */
+    public function plotCoordinates(array $coordinates, Carbon $depart_time, Carbon $arrival_time)
+    {
+        return $this->newInstance([
+            'x' => $coordinates['x'],
+            'y' => $coordinates['y'],
+            'depart_time' => $depart_time,
+            'arrival_time' => $arrival_time
+        ]);
+    }
 }
